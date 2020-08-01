@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
@@ -68,12 +69,13 @@ const Input = styled.input`
 `;
 
 function FormField({
-  value, onChange, type, name, label,
+  value, onChange, type, name, label, suggestions,
 }) {
   const fieldID = `id_${name}`;
   const isTextArea = type === 'textarea';
   const tag = isTextArea ? 'textarea' : 'input';
   const hasValue = Boolean(value.length);
+  const hasSuggestions = Boolean(suggestions.length);
 
   return (
     <FormFieldWrapper>
@@ -88,11 +90,26 @@ function FormField({
           value={value}
           hasValue={hasValue}
           onChange={onChange}
+          autoComplete={hasSuggestions ? 'off' : 'on'}
+          list={`suggestionFor_${fieldID}`}
         />
         <Label.Text>
           {label}
           :
         </Label.Text>
+        {
+          hasSuggestions && (
+          <datalist id={`suggestionFor_${fieldID}`}>
+            {
+              suggestions.map((suggestion) => (
+                <option value={suggestion} key={`sugggestionFor_${fieldID}_option${suggestion}`}>
+                  {suggestion}
+                </option>
+              ))
+            }
+          </datalist>
+          )
+        }
       </Label>
     </FormFieldWrapper>
   );
@@ -102,6 +119,7 @@ FormField.defaultProps = {
   type: 'text',
   value: '',
   onChange: () => {},
+  suggestions: [],
 };
 
 FormField.propTypes = {
@@ -110,6 +128,7 @@ FormField.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.string,
   onChange: PropTypes.func,
+  suggestions: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FormField;

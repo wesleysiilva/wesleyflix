@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/FormField';
 import Button from '../../../components/Button';
+import useForm from '../../../hooks/useForm';
 
 function CadastroCategoria() {
   const initialValues = {
@@ -11,23 +12,8 @@ function CadastroCategoria() {
     color: '#000000',
   };
 
+  const { values, handleChange, formClear } = useForm(initialValues);
   const [categorias, setCategorias] = useState([]);
-  const [values, setValues] = useState(initialValues);
-
-  function setValue(chave, v) {
-    setValues({
-      ...values,
-      [chave]: v,
-    });
-  }
-
-  function handleChange(eventInfo) {
-    const { name, value } = eventInfo.target;
-    setValue(
-      name,
-      value,
-    );
-  }
 
   useEffect(() => {
     if (window.location.href.includes('localhost')) {
@@ -61,10 +47,9 @@ function CadastroCategoria() {
           values,
         ]);
 
-        setValues(initialValues);
+        formClear(initialValues);
       }}
       >
-
         <FormField
           label="Nome da categoria"
           type="text"
@@ -98,7 +83,7 @@ function CadastroCategoria() {
         <ul>
           {categorias.map((categoria) => (
             <li key={`${categoria.id}`}>
-              {categoria.name}
+              {categoria.titulo}
             </li>
           ))}
         </ul>
